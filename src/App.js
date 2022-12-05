@@ -1,56 +1,47 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './assets/css/Toast.css'
-import Modal from 'react-bootstrap/Modal'
+import Modal from './components/Modal'
 import Button from 'react-bootstrap/Button'
 import {useState, useEffect} from "react";
 import Api from "./api/api"
+import modal from "./components/Modal";
 
-function deleteUser(user) {
-    console.log(user)
-}
+
 
 function App() {
     const [Data, setData] = useState([]);
     const [deleteShow, setDeleteShow] = useState(false);
-    const [userId, setUserId] = useState()
+    const [updateShow, setUpdateShow] = useState(false);
+    const [user, setUser] = useState({});
+    const [updateData, setUpdateData] = useState({})
 
     useEffect(() => {
         Api.get('users')
             .then(response => setData(response.data))
             .catch(err => console.log(err))
     }, []);
-    const userDelete = () => {
-        setDeleteShow(false)
-        Api.delete(`users/${userId}`)
-            .then((res) => {
-                console.log(res.status)
-            })
-            .catch((err) => {
-                console.log(err.status)
-            })
-        setData(Data.filter((u) => u.id !== userId))
-        console.log(Data)
+
+    const userUpdate = () => {
+        setUpdateShow(false)
     }
     return (
         <>
-            {/********modal for ask about delete user*********/}
 
-            <Modal show={deleteShow} onHide={() => setDeleteShow(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Delete User</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>Are you sure to delete?</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setDeleteShow(false)}>
-                        Close
-                    </Button>
-                    <Button variant="danger" onClick={() => {
-                        userDelete()
-                    }}>
-                        Delete
-                    </Button>
-                </Modal.Footer>
+            <Modal
+                user={user}
+                setData={setData}
+                data={Data}
+                deleteShow={deleteShow}
+                setDeleteShow={setDeleteShow}
+                updateShow={updateShow}
+                setUpdateShow={setUpdateShow}
+                updateData={updateData}
+                setUpdateData={setUpdateData}
+            >
+
             </Modal>
+
+
 
 
             <div className="row d-flex justify-content-center mt-5">
@@ -71,14 +62,16 @@ function App() {
                                 <button className='rounded-3 border border-3 border-danger  bg-opacity-10 px-2 py-1 '
                                         onClick={() => {
                                             setDeleteShow(true)
-                                            setUserId((data.id))
+                                            setUser(data)
                                         }}>
                                     Delete
                                 </button>
                                 <button
                                     className='rounded-3 border border-3 border-success bg-opacity-10 rounded-3 px-2 py-1'
-                                    onClick={() =>  }
-                                >
+                                    onClick={() =>{
+                                        setUpdateShow(true)
+                                        setUser(data)
+                                    }}>
                                     Update
                                 </button>
                             </div>

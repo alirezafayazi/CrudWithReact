@@ -1,0 +1,104 @@
+import Modal from 'react-bootstrap/Modal'
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form"
+import Api from "../api/api";
+
+
+function Modals(props) {
+
+    const UserDelete = () => {
+        props.setDeleteShow(false)
+        //delete from database with api
+        Api.delete(`users/${props.user.id}`)
+            .then((res) => console.log(res.status))
+            .catch((err) => console.log(err.status))
+
+        props.setData(props.data.filter((u) => u.id !== props.user.id))
+    };
+
+    const UserUpdate= () => {
+        props.setUpdateShow(false);
+        //update from database with api
+        Api.patch(`users/${props.user.id}`,props.updateData)
+            .then((res) => {console.log(res)})
+            .catch((err) => {console.log(err)})
+
+        const index = props.data.indexOf(props.user);
+        props.data[index] = {...props.user,...props.updateData};
+    }
+    return (
+        <>
+             {/*modal for delete users*/}
+            <Modal show={props.deleteShow} onHide={() => props.setDeleteShow(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Delete User</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Are you sure to delete?</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => props.setDeleteShow(false)}>
+                        Close
+                    </Button>
+                    <Button variant="danger" onClick={() => {
+                        UserDelete()
+                    }}>
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/*modal for update user*/}
+            <Modal show={props.updateShow} onHide={()=>props.setUpdateShow(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Update User</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                            <Form.Label>First name</Form.Label>
+                            <Form.Control
+                                onChange={e=> props.setUpdateData({
+                                    ...props.updateData,
+                                    "first_name":e.target.value})}
+                                type="text"
+                                placeholder="your First name"
+                                autoFocus
+                            />
+                            <Form.Label className='mt-2'>Last name</Form.Label>
+                            <Form.Control
+                                onChange={e=> props.setUpdateData({
+                                    ...props.updateData,
+                                    "last_name":e.target.value})}
+                                type="text"
+                                placeholder="your last name"
+                                autoFocus
+                            />
+                            <Form.Label className='mt-2'>image link</Form.Label>
+                            <Form.Control
+                                onChange={e=> props.setUpdateData({
+                                    ...props.updateData,
+                                    "avatar":e.target.value})}
+                                type="text"
+                                placeholder="your image link"
+                                autoFocus
+                            />
+                        </Form.Group>
+
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={()=>props.setUpdateShow(false)}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={()=> {
+                        UserUpdate();
+                    }}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    )
+        ;
+}
+
+export default Modals;
