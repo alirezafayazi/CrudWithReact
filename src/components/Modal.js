@@ -49,12 +49,12 @@ function Modals(props) {
                 <Modal.Body>Are you sure to delete?</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => props.setDeleteShow(false)}>
-                        Close
+                        No , Keep it
                     </Button>
                     <Button variant="danger" onClick={() => {
                         UserDelete()
                     }}>
-                        Delete
+                        Yes , I sure
                     </Button>
                 </Modal.Footer>
             </Modal>
